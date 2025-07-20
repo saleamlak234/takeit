@@ -53,7 +53,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    // origin: "http://www.sahamtradingplc.com",
+    origin: "http://www.sahamtradingplc.com",
     origin:process.env.FRONTEND_URL|| "http://localhost:5173",
     allowedHeaders: ['Content-Type', 'Authorization'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
