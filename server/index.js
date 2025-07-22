@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const helmet = require('helmet');
 
 // Ensure upload directories exist
 const createUploadDirs = () => {
@@ -53,16 +54,13 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: "http://www.sahamtradingplc.com",
-    origin:process.env.FRONTEND_URL|| "http://localhost:5173",
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
-  })
+    origin:process.env.FRONTEND_URL,
+    credentials: true,  
+})
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(helmet()); // Security middleware
 // Create uploads directory if it doesn't exist
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
@@ -109,7 +107,7 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

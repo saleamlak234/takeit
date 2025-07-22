@@ -39,7 +39,6 @@ interface RegisterData {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// const API_BASE_URL =  'http://localhost:3001/api';
 const API_BASE_URL = "http://www.sahamtradingplc.com/api";
 axios.defaults.baseURL = API_BASE_URL;
 

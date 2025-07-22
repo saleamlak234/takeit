@@ -276,7 +276,7 @@ export default function Deposits() {
   };
 
   const viewReceipt = (receiptUrl: string) => {
-    const baseURL ='http://www.sahamtradingplc.com|| http://localhost:3001';
+    const baseURL ='http://www.sahamtradingplc.com'
     const fullReceiptUrl = receiptUrl.startsWith('http') ? receiptUrl : `${baseURL}${receiptUrl}`;
     setImagePreview({
       isOpen: true,

@@ -95,7 +95,7 @@ export default function AdminTransactions() {
   };
 
   const viewReceipt = (receiptUrl: string) => {
-    const baseURL = 'http://localhost:3001';
+    const baseURL = 'http://www.sahamtradingplc.com';
     const fullReceiptUrl = receiptUrl.startsWith('http') ? receiptUrl : `${baseURL}${receiptUrl}`;
     setImagePreview({
       isOpen: true,

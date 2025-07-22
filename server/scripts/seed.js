@@ -17,13 +17,12 @@ async function seedDatabase() {
     await WithdrawalSchedule.deleteMany({});
     console.log('Cleared existing data');
 
-    // Create Super Admin
-    //  const superAdminPassword = bcrypt.hash("superadmin123", 10);
+
      const superAdmin = new User({
        fullName: "Minychil Belay",
-       email: "menychlbelay3@gmail.com",
-       phoneNumber: "+251929343646",
-       password: 'superadmin123',
+       email: "menyichlbelay3@gmail.com",
+       phoneNumber: "+251910109040",
+       password: "superadmin123",
        role: "super_admin",
        referralCode: "SUPER001",
        isActive: true,
@@ -33,11 +32,11 @@ async function seedDatabase() {
 
      // Create Main Admin
     //  const adminPassword = bcrypt.hash("admin123", 10);
-     const admin =  new User({
+     const admin = new User({
        fullName: "derejaw beteseha",
        email: "derejawbetseha916@gmail.com",
        phoneNumber: "+251998458102",
-       password: 'admin123',
+       password: "admin123",
        role: "admin",
        referralCode: "ADMIN001",
        isActive: true,
@@ -45,12 +44,10 @@ async function seedDatabase() {
      await admin.save();
      console.log("Main Admin created:", admin.email);
 
-     // Create Transaction Admin
-    //  const transactionAdminPassword =await bcrypt.hash("transadmin123", 10);
      const transactionAdmin =  new User({
        fullName: "source  dev",
        email: "sourcecodedev34@gmail.com",
-       phoneNumber: "+251929343656",
+       phoneNumber: "+251963722423",
        password: 'transadmin123',
        role: "transaction_admin",
        referralCode: "TRANS001",

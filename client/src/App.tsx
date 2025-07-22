@@ -46,7 +46,7 @@ function App() {
         
         {/* Admin Routes */}
         <Route path="admin" element={user?.role === 'admin' || user?.role === 'super_admin' ? <AdminDashboard /> : <Navigate to="/dashboard" />} />
-        <Route path="admin/users" element={user?.role === 'super_admin' ? <AdminUsers /> : <Navigate to="/dashboard" />} />
+        <Route path="admin/users" element={user?.role === 'super_admin' ? user?.role === 'transaction_admin' ?<AdminUsers /> : <Navigate to="/dashboard" />} />
         <Route path="admin/transactions" element={ user?.role === 'super_admin' || user?.role === 'transaction_admin' ? <AdminTransactions /> : <Navigate to="/dashboard" />} />
       </Route>
     </Routes>
