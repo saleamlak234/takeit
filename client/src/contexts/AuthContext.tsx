@@ -39,7 +39,7 @@ interface RegisterData {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_BASE_URL = "http://www.sahamtradingplc.com/api";
+const API_BASE_URL = "http:///31.97.125.62:5000/api";
 axios.defaults.baseURL = API_BASE_URL;
 
 // Add request interceptor to handle file uploads
