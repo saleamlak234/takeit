@@ -95,7 +95,7 @@ export default function AdminTransactions() {
   };
 
   const viewReceipt = (receiptUrl: string) => {
-    const baseURL = 'http://www.sahamtradingplc.com';
+    const baseURL = 'http://31.97.125.62:5000';
     const fullReceiptUrl = receiptUrl.startsWith('http') ? receiptUrl : `${baseURL}${receiptUrl}`;
     setImagePreview({
       isOpen: true,
