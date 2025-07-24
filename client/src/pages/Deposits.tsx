@@ -57,7 +57,7 @@ interface MerchantAccount {
   isActive: boolean;
 }
 
- const PACKAGES = [
+const PACKAGES = [
   { name: '7th Stock Package', price: 192000, dailyReturn: 3200 },
   { name: '6th Stock Package', price: 96000, dailyReturn: 1600 },
   { name: '5th Stock Package', price: 48000, dailyReturn: 800 },
@@ -276,7 +276,7 @@ export default function Deposits() {
   };
 
   const viewReceipt = (receiptUrl: string) => {
-    const baseURL ='http://www.sahamtradingplc.com'
+    const baseURL = 'http://localhost:5000/'; // Change to your backend URL
     const fullReceiptUrl = receiptUrl.startsWith('http') ? receiptUrl : `${baseURL}${receiptUrl}`;
     setImagePreview({
       isOpen: true,
@@ -329,7 +329,9 @@ export default function Deposits() {
           <div className="flex space-x-4">
             <button
               onClick={() => setShowDepositForm(true)}
-              className="flex items-center px-6 py-3 space-x-2 font-medium text-white rounded-lg bg-primary-600 hover:bg-primary-700"
+              className="flex items-center px-6 py-3 space-x-2 font-medium text-white rounded-lg bg-primary-600 hover:bg-primary-700 disabled:opacity-50"
+              disabled={deposits.length > 0}
+              title={deposits.length > 0 ? "You already have a deposit. Please upgrade instead." : ""}
             >
               <Plus className="w-5 h-5" />
               <span>New Deposit</span>
@@ -347,9 +349,27 @@ export default function Deposits() {
         </div>
 
         {/* Deposit Form Modal */}
-        {showDepositForm && (
+        {showDepositForm && deposits.length > 0 && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+            <div className="max-w-md p-8 text-center bg-white rounded-xl">
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">Deposit Already Exists</h2>
+              <p className="mb-6 text-gray-700">
+                You already have a deposit. You can only upgrade your package.
+              </p>
+              <button
+                onClick={() => setShowDepositForm(false)}
+                className="px-6 py-3 font-medium text-white rounded-lg bg-primary-600 hover:bg-primary-700"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
+        {showDepositForm && deposits.length === 0 && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
             <div className="w-full max-w-4xl max-h-screen overflow-y-auto bg-white rounded-xl">
+              {/* ...existing deposit form content... */}
               <div className="p-6">
                 <h2 className="mb-6 text-2xl font-bold text-gray-900">Make a Deposit</h2>
 
@@ -368,8 +388,8 @@ export default function Deposits() {
                         key={index}
                         onClick={() => handlePackageSelect(pkg)}
                         className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${formData.package === pkg.name
-                            ? 'border-primary-500 bg-primary-50'
-                            : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-primary-500 bg-primary-50'
+                          : 'border-gray-200 hover:border-gray-300'
                           }`}
                       >
                         <h4 className="font-semibold text-gray-900">{pkg.name}</h4>
@@ -412,8 +432,8 @@ export default function Deposits() {
                         <div
                           onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'bank_transfer' }))}
                           className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${formData.paymentMethod === 'bank_transfer'
-                              ? 'border-primary-500 bg-primary-50'
-                              : 'border-gray-200 hover:border-gray-300'
+                            ? 'border-primary-500 bg-primary-50'
+                            : 'border-gray-200 hover:border-gray-300'
                             }`}
                         >
                           <div className="flex items-center space-x-2">
@@ -425,8 +445,8 @@ export default function Deposits() {
                         <div
                           onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'mobile_money' }))}
                           className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${formData.paymentMethod === 'mobile_money'
-                              ? 'border-primary-500 bg-primary-50'
-                              : 'border-gray-200 hover:border-gray-300'
+                            ? 'border-primary-500 bg-primary-50'
+                            : 'border-gray-200 hover:border-gray-300'
                             }`}
                         >
                           <div className="flex items-center space-x-2">
@@ -454,8 +474,8 @@ export default function Deposits() {
                             key={account._id}
                             onClick={() => setFormData(prev => ({ ...prev, merchantAccountId: account._id }))}
                             className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${formData.merchantAccountId === account._id
-                                ? 'border-primary-500 bg-primary-50'
-                                : 'border-gray-200 hover:border-gray-300'
+                              ? 'border-primary-500 bg-primary-50'
+                              : 'border-gray-200 hover:border-gray-300'
                               }`}
                           >
                             <h4 className="font-semibold text-gray-900">{account.name}</h4>
@@ -755,8 +775,8 @@ export default function Deposits() {
                               key={index}
                               onClick={() => handleUpgradePackageSelect(pkg)}
                               className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${upgradeFormData.newPackage === pkg.name
-                                  ? 'border-primary-500 bg-primary-50'
-                                  : 'border-gray-200 hover:border-gray-300'
+                                ? 'border-primary-500 bg-primary-50'
+                                : 'border-gray-200 hover:border-gray-300'
                                 }`}
                             >
                               <h4 className="font-semibold text-gray-900">{pkg.name}</h4>
@@ -805,8 +825,8 @@ export default function Deposits() {
                             <div
                               onClick={() => setUpgradeFormData(prev => ({ ...prev, paymentMethod: 'bank_transfer' }))}
                               className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${upgradeFormData.paymentMethod === 'bank_transfer'
-                                  ? 'border-primary-500 bg-primary-50'
-                                  : 'border-gray-200 hover:border-gray-300'
+                                ? 'border-primary-500 bg-primary-50'
+                                : 'border-gray-200 hover:border-gray-300'
                                 }`}
                             >
                               <div className="flex items-center space-x-2">
@@ -818,8 +838,8 @@ export default function Deposits() {
                             <div
                               onClick={() => setUpgradeFormData(prev => ({ ...prev, paymentMethod: 'mobile_money' }))}
                               className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${upgradeFormData.paymentMethod === 'mobile_money'
-                                  ? 'border-primary-500 bg-primary-50'
-                                  : 'border-gray-200 hover:border-gray-300'
+                                ? 'border-primary-500 bg-primary-50'
+                                : 'border-gray-200 hover:border-gray-300'
                                 }`}
                             >
                               <div className="flex items-center space-x-2">
@@ -847,8 +867,8 @@ export default function Deposits() {
                                 key={account._id}
                                 onClick={() => setUpgradeFormData(prev => ({ ...prev, merchantAccountId: account._id }))}
                                 className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${upgradeFormData.merchantAccountId === account._id
-                                    ? 'border-primary-500 bg-primary-50'
-                                    : 'border-gray-200 hover:border-gray-300'
+                                  ? 'border-primary-500 bg-primary-50'
+                                  : 'border-gray-200 hover:border-gray-300'
                                   }`}
                               >
                                 <h4 className="font-semibold text-gray-900">{account.name}</h4>
@@ -971,3 +991,5 @@ export default function Deposits() {
     </div>
   );
 }
+
+
