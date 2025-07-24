@@ -276,7 +276,7 @@ export default function Deposits() {
   };
 
   const viewReceipt = (receiptUrl: string) => {
-    const baseURL = 'http://localhost:5000/'; // Change to your backend URL
+    const baseURL = 'http://31.97.125.62:5000/'; // Change to your backend URL
     const fullReceiptUrl = receiptUrl.startsWith('http') ? receiptUrl : `${baseURL}${receiptUrl}`;
     setImagePreview({
       isOpen: true,
