@@ -19,3 +19,4 @@ client/*.log
 client/.DS_Store
 client/tmp/
 client/.env.production
+.env
