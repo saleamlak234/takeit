@@ -54,9 +54,12 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin:process.env.FRONTEND_URL,
-    credentials: true,  
-})
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Default to localhost for development       
+    optionsSuccessStatus: 200,
+   allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  })
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
