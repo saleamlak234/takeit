@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { getUserTimezone } from '../utils/timezone';
 
 interface User {
   id: string;
@@ -44,6 +45,9 @@ axios.defaults.baseURL = API_BASE_URL;
 
 // Add request interceptor to handle file uploads
 axios.interceptors.request.use((config) => {
+  // Add user timezone to all requests
+  config.headers['x-user-timezone'] = getUserTimezone();
+  
   // For file uploads, don't set content-type header (let browser set it)
   if (config.data instanceof FormData) {
     delete config.headers['Content-Type'];

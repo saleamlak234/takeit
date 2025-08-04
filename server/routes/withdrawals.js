@@ -25,13 +25,10 @@ const WITHDRAWAL_PACKAGES = [
 // Check withdrawal schedule
 const isWithdrawalAllowed = async () => {
   try {
-    const schedule = await WithdrawalSchedule.findOne({ isActive: true });
-    if (!schedule) return true; // If no schedule set, allow withdrawals
-
+    // Use local time window: 10:00 AM to 5:00 PM
     const now = new Date();
     const currentHour = now.getHours();
-
-    return currentHour >= schedule.startHour && currentHour <= schedule.endHour;
+    return currentHour >= 10 && currentHour <= 17;
   } catch (error) {
     console.error("Withdrawal schedule check error:", error);
     return false;
@@ -111,12 +108,9 @@ router.post("/", async (req, res) => {
 
     // Check withdrawal schedule
     const isAllowed = await isWithdrawalAllowed();
-    if (isAllowed) {
-      const schedule = await WithdrawalSchedule.findOne({ isActive: true });
+    if (!isAllowed) {
       return res.status(400).json({
-        message: `Withdrawals are only allowed between ${
-          schedule?.startHour || 4
-        }:00 and ${schedule?.endHour || 11}:00`,
+        message: `Withdrawals are only allowed between 10:00 AM and 5:00 PM in your local timezone`,
       });
     }
 

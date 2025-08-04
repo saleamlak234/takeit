@@ -68,6 +68,18 @@ const depositSchema = new mongoose.Schema(
       ref: "Deposit",
       default: null,
     },
+    userTimezone: {
+      type: String,
+      default: 'UTC'
+    },
+    dailyReturnAmount: {
+      type: Number,
+      default: 0
+    },
+    totalReturnDays: {
+      type: Number,
+      default: 60
+    }
   },
 
   {
@@ -89,4 +101,17 @@ depositSchema.methods.getMonthlyReturn = function () {
   return returnRates[this.package] || 0;
 };
 
+// Calculate daily return based on package
+depositSchema.methods.getDailyReturn = function () {
+  const dailyReturns = {
+    "7th Stock Package": 3200,
+    '6th Stock Package': 1600,
+    '5th Stock Package': 800,
+    '4th Stock Package': 400,
+    '3rd Stock Package': 200,
+    '2nd Stock Package': 100,
+    '1st Stock Package': 50
+  };
+  return dailyReturns[this.package] || 0;
+};
 module.exports = mongoose.model("Deposit", depositSchema);

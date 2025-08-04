@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { getTimeUntilNextMidnight, formatTimeInTimezone } from '../utils/timezone';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -56,6 +57,7 @@ interface WithdrawalSchedule {
 export default function Dashboard() {
   const { user } = useAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [nextReturnCountdown, setNextReturnCountdown] = useState<string>('');
   const [merchantAccounts, setMerchantAccounts] = useState<MerchantAccount[]>([]);
   const [withdrawalSchedule, setWithdrawalSchedule] = useState<WithdrawalSchedule | null>(null);
   const [loading, setLoading] = useState(true);
@@ -64,6 +66,17 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchDashboardData();
+    
+    // Update countdown every second
+    const interval = setInterval(() => {
+      const timeUntilMidnight = getTimeUntilNextMidnight();
+      const hours = Math.floor(timeUntilMidnight / (1000 * 60 * 60));
+      const minutes = Math.floor((timeUntilMidnight % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeUntilMidnight % (1000 * 60)) / 1000);
+      setNextReturnCountdown(`${hours}h ${minutes}m ${seconds}s`);
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const fetchDashboardData = async () => {
@@ -145,6 +158,23 @@ export default function Dashboard() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
+          <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Next Daily Return</p>
+                <p className="text-2xl font-bold text-primary-600">
+                  {nextReturnCountdown}
+                </p>
+              </div>
+              <div className="p-3 bg-primary-100 rounded-full">
+                <Clock className="w-6 h-6 text-primary-600" />
+              </div>
+            </div>
+            <div className="flex items-center mt-4 text-sm">
+              <span className="text-primary-600">Until midnight (local time)</span>
+            </div>
+          </div>
+
           <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
             <div className="flex items-center justify-between">
               <div>

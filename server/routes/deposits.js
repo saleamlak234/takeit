@@ -7,6 +7,9 @@ const MerchantAccount = require("../models/MerchantAccount");
 const User = require("../models/User");
 const Commission = require("../models/Commission");
 const telegramService = require("../services/telegram");
+const { scheduleDailyReturns } = require('../jobs/dailyReturns');
+const UpgradeHistory = require('../models/UpgradeHistory');
+const DailyReturn = require('../models/DailyReturn');
 
 const router = express.Router();
 
@@ -81,6 +84,7 @@ router.post("/", upload.single("receipt"), async (req, res) => {
       transactionReference,
     } = req.body;
     const userId = req.user._id;
+    const userTimezone = req.headers['x-user-timezone'] || 'UTC';
 
     // Validate package and amount
     const packagePrices = {
@@ -118,10 +122,17 @@ router.post("/", upload.single("receipt"), async (req, res) => {
       amount: parseInt(amount),
       package: packageName,
       paymentMethod,
+    // Get user timezone from request or default to UTC
+    const userTimezone = deposit.userTimezone || 'UTC';
+    
       merchantAccount: merchantAccountId,
       receiptUrl: req.file ? `/uploads/receipts/${req.file.filename}` : null,
       transactionReference,
+      userTimezone
     });
+
+    // Schedule daily returns for this deposit
+    await scheduleDailyReturns(deposit, userTimezone);
 
     await deposit.save();
 
@@ -248,14 +259,41 @@ router.post(
         receiptUrl: req.file ? `/uploads/receipts/${req.file.filename}` : null,
         transactionReference,
         upgradedFrom: originalDeposit._id,
+        userTimezone: req.headers['x-user-timezone'] || 'UTC'
       });
 
       await upgradeDeposit.save();
+
+      // Create upgrade history record
+      const upgradeHistory = new UpgradeHistory({
+        user: userId,
+        originalDeposit: originalDeposit._id,
+        upgradeDeposit: upgradeDeposit._id,
+        fromPackage: originalDeposit.package,
+        toPackage: newPackage,
+        upgradeAmount,
+        newDailyReturn: packagePrices[newPackage] / 60, // Assuming 60-day return period
+        effectiveDate: new Date(),
+        timezone: req.headers['x-user-timezone'] || 'UTC'
+      });
+
+      await upgradeHistory.save();
 
       // Mark original deposit as upgraded
       originalDeposit.isUpgraded = true;
       originalDeposit.upgradedTo = upgradeDeposit._id;
       await originalDeposit.save();
+
+      // Cancel remaining daily returns for original deposit
+      await DailyReturn.updateMany(
+        {
+          deposit: originalDeposit._id,
+          status: 'pending'
+        },
+        {
+          status: 'cancelled'
+        }
+      );
 
       console.log("Upgrade deposit created successfully:", upgradeDeposit._id);
       // Send notification to admin

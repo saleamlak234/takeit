@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { getWithdrawalTimeStatus, formatTimeInTimezone } from '../utils/timezone';
 import {
   ArrowUpRight,
   DollarSign,
@@ -111,6 +112,7 @@ const WITHDRAWAL_PACKAGES = [
 export default function Withdrawals() {
   const { user } = useAuth();
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
+  const [withdrawalTimeStatus, setWithdrawalTimeStatus] = useState(getWithdrawalTimeStatus());
   const [loading, setLoading] = useState(true);
   const [showWithdrawForm, setShowWithdrawForm] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<string>('');
@@ -127,6 +129,13 @@ export default function Withdrawals() {
 
   useEffect(() => {
     fetchWithdrawals();
+    
+    // Update withdrawal time status every minute
+    const interval = setInterval(() => {
+      setWithdrawalTimeStatus(getWithdrawalTimeStatus());
+    }, 60000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const fetchWithdrawals = async () => {
@@ -249,7 +258,9 @@ export default function Withdrawals() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Withdrawals</h1>
-            <p className="mt-1 text-gray-600">Withdraw using predefined packages (4:00 AM - 11:00 AM daily)</p>
+            <p className="mt-1 text-gray-600">
+              Withdraw using predefined packages (10:00 AM - 5:00 PM daily in your local time)
+            </p>
           </div>
           <div className="flex items-center space-x-4">
             <div className="text-right">
@@ -260,13 +271,26 @@ export default function Withdrawals() {
             </div>
             <button
               onClick={() => setShowWithdrawForm(true)}
-              disabled={(user?.balance || 0) < 200}
+              disabled={(user?.balance || 0) < 200 || !withdrawalTimeStatus.isActive}
               className="flex items-center px-6 py-3 space-x-2 font-medium text-white rounded-lg bg-primary-600 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ArrowUpRight className="w-5 h-5" />
               <span>Withdraw</span>
             </button>
           </div>
+        </div>
+
+        {/* Withdrawal Time Status */}
+        <div className={`flex items-center p-4 mb-6 space-x-2 border rounded-lg ${
+          withdrawalTimeStatus.isActive 
+            ? 'border-green-200 bg-green-50' 
+            : 'border-yellow-200 bg-yellow-50'
+        }`}>
+          <Clock className={`flex-shrink-0 w-5 h-5 ${withdrawalTimeStatus.isActive ? 'text-green-600' : 'text-yellow-600'}`} />
+          <span className={withdrawalTimeStatus.isActive ? 'text-green-800' : 'text-yellow-800'}>
+            {withdrawalTimeStatus.message}
+            {withdrawalTimeStatus.nextAvailable && ` Next available: ${withdrawalTimeStatus.nextAvailable}`}
+          </span>
         </div>
 
         {/* Balance Warning */}
@@ -289,7 +313,7 @@ export default function Withdrawals() {
             <p>• You can only withdraw using predefined package amounts</p>
             <p>• 15% VAT will be deducted from your withdrawal amount</p>
             <p>• You can only make one withdrawal per day</p>
-            <p>• Withdrawals are only available between 4:00 AM - 11:00 AM</p>
+            <p>• Withdrawals are only available between 10:00 AM - 5:00 PM in your local timezone</p>
           </div>
         </div>
 

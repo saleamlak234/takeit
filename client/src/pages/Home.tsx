@@ -49,51 +49,50 @@ export default function Home() {
     {
       name: '7th package',
       price: 192000,
-
-      // quarterlyWithdraw: true,
+      dailyReturn: 3200,
+      totalDays: 60,
       popular: false
     },
     {
       name: '6th package',
       price: 96000,
-      // monthlyReturn: 7000,
-      // quarterlyWithdraw: true,
+      dailyReturn: 1600,
+      totalDays: 60,
       popular: false
     },
     {
-      nameKey: '5th package',
+      name: '5th package',
       price: 48000,
-      // monthlyReturn: 3500,
-      // quarterlyWithdraw: true,
+      dailyReturn: 800,
+      totalDays: 60,
       popular: false
     },
     {
       name: '4th package',
       price: 24000,
-      // monthlyReturn: 1400,
-      // quarterlyWithdraw: true,
+      dailyReturn: 400,
+      totalDays: 60,
       popular: false
     },
     {
       name: '3rd package',
       price: 12000,
-      // monthlyReturn: 1400,
-      // quarterlyWithdraw: true,
+      dailyReturn: 200,
+      totalDays: 60,
       popular: false
     },
     {
       name: '2nd package',
       price: 6000,
-      // monthlyReturn: 1400,
-      // quarterlyWithdraw: true,
+      dailyReturn: 100,
+      totalDays: 60,
       popular: true
     },
     {
       name: '1st package',
       price: 3000,
-      // monthlyReturn: 1400,
-      // quarterlyWithdraw: true,
-
+      dailyReturn: 50,
+      totalDays: 60,
       popular: false
     }
   ];
@@ -257,24 +256,34 @@ export default function Home() {
                   </div>
                   <div className="mb-6 text-sm text-gray-500">Initial Investment</div>
                   
-    
+                  <div className="mb-4 p-3 bg-green-50 rounded-lg">
+                    <div className="text-center">
+                      <p className="text-lg font-bold text-green-800">
+                        {pkg.dailyReturn.toLocaleString()} ETB
+                      </p>
+                      <p className="text-sm text-green-600">Daily Return</p>
+                      <p className="text-xs text-green-500">
+                        For {pkg.totalDays} days
+                      </p>
+                    </div>
+                  </div>
 
                   <ul className="mb-6 space-y-2">
                     <li className="flex items-center text-sm text-gray-600">
                       <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
-                      15% daily Returns
+                      Daily Returns at Midnight
                     </li>
                     <li className="flex items-center text-sm text-gray-600">
                       <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
-                      daily Withdrawals
+                      Daily Withdrawals (10AM-5PM)
+                    </li>
+                    <li className="flex items-center text-sm text-gray-600">
+                      <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
+                      Multiple Upgrades Allowed
                     </li>
                     <li className="flex items-center text-sm text-gray-600">
                       <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
                       MLM Commission Eligible
-                    </li>
-                    <li className="flex items-center text-sm text-gray-600">
-                      <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
-                      24/7 Support
                     </li>
                   </ul>
 
