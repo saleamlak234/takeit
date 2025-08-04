@@ -451,10 +451,15 @@ router.put(
 // Helper function to process deposit approval
 async function processDepositApproval(deposit) {
   try {
+    const { scheduleDailyReturns } = require('../jobs/dailyReturns');
+    
     // Update user's total deposits
     await User.findByIdAndUpdate(deposit.user._id, {
       $inc: { totalDeposits: deposit.amount },
     });
+
+    // Schedule daily returns for approved deposit
+    await scheduleDailyReturns(deposit, deposit.userTimezone || 'UTC');
 
     // Process commissions
     await processDepositCommissions(deposit);

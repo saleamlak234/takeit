@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import ImagePreviewModal from '../components/ImagePreviewModal';
@@ -399,6 +398,9 @@ export default function Deposits() {
                         <p className="text-sm text-gray-600">
                           Monthly Return: {pkg.dailyReturn.toLocaleString()} ETB
                         </p>
+                        <p className="text-xs text-gray-500">
+                          Daily: {(pkg.dailyReturn / 30).toFixed(0)} ETB × 60 days
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -790,7 +792,10 @@ export default function Deposits() {
                                   </span>
                                 </p>
                                 <p className="text-gray-600">
-                                  Monthly Return: {pkg.dailyReturn.toLocaleString()} ETB
+                                  Daily Return: {pkg.dailyReturn.toLocaleString()} ETB
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  Total over 60 days: {(pkg.dailyReturn * 60).toLocaleString()} ETB
                                 </p>
                               </div>
                             </div>
@@ -991,5 +996,3 @@ export default function Deposits() {
     </div>
   );
 }
-
-

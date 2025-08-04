@@ -78,6 +78,9 @@ export default function Header() {
                   <Crown className="h-4 w-4" />
                   <span>VIP Levels</span>
                 </Link>
+                <Link to="/daily-returns" className="text-gray-700 hover:text-primary-600 transition-colors">
+                  Daily Returns
+                </Link>
                 {(user.role === 'admin' || user.role === 'super_admin' || user.role === 'transaction_admin') && (
                   <Link to="/admin" className="text-red-600 hover:text-red-700 transition-colors font-medium">
                     Admin
@@ -240,6 +243,13 @@ export default function Header() {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     VIP Levels
+                  </Link>
+                  <Link
+                    to="/daily-returns"
+                    className="text-gray-700 hover:text-primary-600 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Daily Returns
                   </Link>
                   <Link
                     to="/deposits"
